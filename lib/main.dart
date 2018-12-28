@@ -7,7 +7,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Welcome to Flutter',
       home: new Scaffold(
         appBar: new AppBar(
           title: new Text('Welcome to Flutter'),
@@ -33,6 +32,16 @@ class RandomWrodsState extends State<RandomWords> {
 
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("StartUp Name Generator"),
+      ),
+      body: _buildSuggestions(),
+    );
+  }
+
   Widget _buildSuggestions() {
     return new ListView.builder(
         padding: const EdgeInsets.all(16.0),
@@ -55,16 +64,6 @@ class RandomWrodsState extends State<RandomWords> {
           }
           return _buildRow(_suggestions[index]);
         });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("StartUp Name Generator"),
-      ),
-      body: _buildSuggestions(),
-    );
   }
 
   Widget _buildRow(WordPair suggestion) {
