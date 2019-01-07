@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:flutter_app/liked.dart';
 
 void main() => runApp(new MyApp());
 
@@ -34,7 +35,6 @@ class RandomWrodsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
 
   final _saved = new Set<WordPair>();
-
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
   @override
@@ -97,22 +97,7 @@ class RandomWrodsState extends State<RandomWords> {
   }
 
   void _pushSaved() {
-    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-      final titles = _saved.map((pair) {
-        return new ListTile(
-            title: new Text(
-          pair.asPascalCase,
-          style: _biggerFont,
-        ));
-      });
-      final divided =
-          ListTile.divideTiles(tiles: titles, context: context).toList();
-      return new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Saved Suggestions'),
-        ),
-        body: new ListView(children: divided),
-      );
-    }));
+    Navigator.of(context).push(
+        new MaterialPageRoute(builder: (context) => new LikedScreen(_saved)));
   }
 }
