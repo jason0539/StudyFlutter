@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:flutter_app/detail.dart';
 
 class LikedScreen extends StatelessWidget {
 
@@ -12,10 +13,13 @@ class LikedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final titles = _saved.map((pair) {
       return new ListTile(
-          title: new Text(
-            pair.asPascalCase,
-            style: _biggerFont,
-          ));
+        title: new Text(
+          pair.asPascalCase,
+          style: _biggerFont,
+        ),
+        onTap:(){
+          toDetail(context);
+        });
     });
     final divided =
     ListTile.divideTiles(tiles: titles, context: context).toList();
@@ -25,5 +29,9 @@ class LikedScreen extends StatelessWidget {
       ),
       body: new ListView(children: divided),
     );
+  }
+
+  void toDetail(BuildContext context){
+    Navigator.push(context,new MaterialPageRoute(builder: (context) => new Detail()));
   }
 }
