@@ -38,26 +38,34 @@ class Detail extends StatelessWidget {
       ),
     );
 
-    Column buildButtonColumn(IconData icon, String label) {
+    Widget buildButtonColumn(IconData icon, String label) {
       Color color = Theme.of(context).primaryColor;
-      return new Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          new Icon(
-            icon,
-            color: color,
-          ),
-          new Container(
-            margin: const EdgeInsets.only(top: 8.0),
-            child: new Text(
-              label,
-              style: new TextStyle(
-                  fontSize: 12.0, fontWeight: FontWeight.w400, color: color),
-            ),
-          )
-        ],
-      );
+      return Builder(
+          builder: (context) => new InkWell(
+              onTap: () {
+                Scaffold.of(context)
+                    .showSnackBar(new SnackBar(content: new Text(label)));
+              },
+              child: new Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  new Icon(
+                    icon,
+                    color: color,
+                  ),
+                  new Container(
+                    margin: const EdgeInsets.only(top: 8.0),
+                    child: new Text(
+                      label,
+                      style: new TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w400,
+                          color: color),
+                    ),
+                  )
+                ],
+              )));
     }
 
     Widget buttonSection = new Container(
@@ -93,17 +101,16 @@ class Detail extends StatelessWidget {
             titleSection,
             buttonSection,
             textSection,
-            Builder(
-                builder: (context) => new InkWell(
-                      onTap: () {
-                        Scaffold.of(context).showSnackBar(
-                            new SnackBar(content: new Text('Tap')));
-                      },
-                      child: new Container(
-                        padding: new EdgeInsets.all(12.0),
-                        child: new Image.network(imgUrl),
-                      ),
-                    ))
+            new InkWell(
+              onTap: () {
+                Scaffold.of(context)
+                    .showSnackBar(new SnackBar(content: new Text('Tap')));
+              },
+              child: new Container(
+                padding: new EdgeInsets.all(12.0),
+                child: new Image.network(imgUrl),
+              ),
+            )
           ],
         ));
   }
