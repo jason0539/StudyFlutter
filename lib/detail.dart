@@ -10,15 +10,24 @@ class Detail extends StatelessWidget {
         appBar: new AppBar(
           title: new Text("Images"),
         ),
-        body: new InkWell(
-          onTap: () {
-            Scaffold.of(context)
-                .showSnackBar(new SnackBar(content: new Text('Tap')));
-          },
-          child: new Container(
-            padding: new EdgeInsets.all(12.0),
-            child: new Image.network(imgUrl),
-          ),
+        body: new ListView(
+          children: <Widget>[
+            new Image.asset(
+              'images/king_of_ocean_thief.jpg',
+              width: 600,
+              height: 240,
+              fit: BoxFit.fill,
+            ),
+            new InkWell(
+              onTap: () {
+                Scaffold.of(context).showSnackBar(new SnackBar(content: new Text('Tap')));
+              },
+              child: new Container(
+                padding: new EdgeInsets.all(12.0),
+                child: new Image.network(imgUrl),
+              ),
+            )
+          ],
         ));
   }
 }
