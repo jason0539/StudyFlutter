@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
-import 'package:flutter_app/liked.dart';
+import 'package:flutter_app/random.dart';
 
 void main() => runApp(new MyApp());
 
@@ -8,96 +7,46 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      theme: new ThemeData(
-        primaryColor: Colors.red,
-      ),
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Welcome to Flutter'),
+        theme: new ThemeData(
+          primaryColor: Colors.red,
         ),
-        body: new Center(
-          child: new RandomWords(),
-        ),
-      ),
-    );
+        home: new HomeScreen());
   }
 }
 
-class RandomWords extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return new RandomWrodsState();
-  }
-}
-
-class RandomWrodsState extends State<RandomWords> {
-  final _suggestions = <WordPair>[];
-
-  final _saved = new Set<WordPair>();
-  final _biggerFont = const TextStyle(fontSize: 18.0);
+class HomeScreen extends StatelessWidget {
+  final _demoEntrance = <String>["Random", "Douban"];
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-          title: new Text("StartUp Name Generator"),
-          actions: <Widget>[
-            new IconButton(icon: new Icon(Icons.list), onPressed: _pushSaved)
-          ]),
-      body: _buildSuggestions(),
-    );
-  }
-
-  Widget _buildSuggestions() {
-    return new ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        // 对于每个建议的单词对都会调用一次itemBuilder，然后将单词对添加到ListTile行中
-        // 在偶数行，该函数会为单词对添加一个ListTile row.
-        // 在奇数行，该行书湖添加一个分割线widget，来分隔相邻的词对。
-        // 注意，在小屏幕上，分割线看起来可能比较吃力。
-        itemBuilder: (context, i) {
-          // 在每一列之前，添加一个1像素高的分隔线widget
-          if (i.isOdd) return new Divider();
-
-          // 语法 "i ~/ 2" 表示i除以2，但返回值是整形（向下取整），比如i为：1, 2, 3, 4, 5
-          // 时，结果为0, 1, 1, 2, 2， 这可以计算出ListView中减去分隔线后的实际单词对数量
+        appBar: new AppBar(
+          title: new Text('Welcome to Flutter'),
+        ),
+        body: new ListView.builder(itemBuilder: (context, i) {
+          if (i.isOdd) {
+            return new Divider();
+          }
           final index = i ~/ 2;
-
-          // 如果是建议列表中最后一个单词对
-          if (index >= _suggestions.length) {
-            //接着生成10个单次对，然后添加到建议列表
-            _suggestions.addAll(generateWordPairs().take(10));
+          if (index < _demoEntrance.length) {
+            return new ListTile(
+              onTap: () {
+                clickLv(context, _demoEntrance[index]);
+              },
+              title: new Text(_demoEntrance[index]),
+            );
           }
-          return _buildRow(_suggestions[index]);
-        });
+        }));
   }
+}
 
-  Widget _buildRow(WordPair suggestion) {
-    final alreadySaved = _saved.contains(suggestion);
-    return new ListTile(
-      title: new Text(
-        suggestion.asPascalCase,
-        style: _biggerFont,
-      ),
-      trailing: new Icon(
-        alreadySaved ? Icons.favorite : Icons.favorite_border,
-        color: alreadySaved ? Colors.red : null,
-      ),
-      onTap: () {
-        setState(() {
-          if (alreadySaved) {
-            _saved.remove(suggestion);
-          } else {
-            _saved.add(suggestion);
-          }
-        });
-      },
-    );
-  }
-
-  void _pushSaved() {
-    Navigator.of(context).push(
-        new MaterialPageRoute(builder: (context) => new LikedScreen(_saved)));
+void clickLv(BuildContext context, String itemStr) {
+  switch (itemStr) {
+    case "Random":
+      Navigator.of(context)
+          .push(new MaterialPageRoute(builder: (context) => new RandomWords()));
+      break;
+    case "Douban":
+      break;
   }
 }
