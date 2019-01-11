@@ -13,39 +13,50 @@ class Douban extends StatefulWidget {
 }
 
 class DoubanState extends State<Douban> {
-  DoubanResponse _doubanResponse = null;
+  List<DMovie> _movies = [];
+  int currPage = 0;
+  int pageLimit = 15;
+  int total = 0;
   ScrollController _scrollController = new ScrollController();
   bool isPerformingRequest = false;
 
   void fetchDouban() async {
-    print("fetchDouban");
+    print("第一页");
+    _movies.clear();
+    currPage = 0;
+    int start = currPage * pageLimit;
     final response = await http
-        .get("https://api.douban.com/v2/movie/in_theaters?start=0&count=15");
+        .get("https://api.douban.com/v2/movie/in_theaters?start=${start}&count=${pageLimit}");
     Map<String, dynamic> responseMap = json.decode(response.body);
     print(responseMap);
     if (responseMap.containsKey('code') && responseMap['code'] != 200) {
       String msg = responseMap['msg'];
       print(msg);
     } else {
+      DoubanResponse doubanResponse = DoubanResponse.fromJson(responseMap);
+      total = doubanResponse.total;
       setState(() {
-        _doubanResponse = DoubanResponse.fromJson(responseMap);
+        _movies.addAll(doubanResponse.movies);
       });
     }
   }
 
   void fetchNextPage() async {
-    print("fetchNextPage");
+    currPage++;
+    print("下一页");
     if (!isPerformingRequest) {
       setState(() {
         isPerformingRequest = true;
       });
+      int start = currPage * pageLimit;
       final response = await http
-          .get("https://api.douban.com/v2/movie/in_theaters?start=0&count=15");
+          .get("https://api.douban.com/v2/movie/in_theaters?start=${start}&count=${pageLimit}");
       Map<String, dynamic> responseMap = json.decode(response.body);
       print(responseMap);
       setState(() {
-        _doubanResponse.movies
-            .addAll(DoubanResponse.fromJson(responseMap).movies);
+        setState(() {
+          _movies.addAll(DoubanResponse.fromJson(responseMap).movies);
+        });
         isPerformingRequest = false;
       });
     }
@@ -80,32 +91,32 @@ class DoubanState extends State<Douban> {
             if (i.isOdd) {
               return new Divider();
             }
-            final movies = _doubanResponse.movies;
             final index = i ~/ 2;
-            if (index == movies.length) {
-              return _buildProgressIndicator();
+            if (index == _movies.length) {
+              bool end = total == _movies.length;
+              return _buildProgressIndicator(end);
             } else {
               return new Row(
                 children: <Widget>[
                   new Image.network(
-                    movies[index].images.small,
+                    _movies[index].images.small,
                     height: 80,
                   ),
-                  new Text(movies[index].title)
+                  new Text(_movies[index].title)
                 ],
               );
             }
           },
           physics: const AlwaysScrollableScrollPhysics(),
-          itemCount: (_doubanResponse == null)
+          itemCount: (_movies.length == 0)
               ? 0
-              : _doubanResponse.movies.length * 2 + 1,
+              : _movies.length * 2 + 1,
           controller: _scrollController,
         ),
         onRefresh: () {
           fetchDouban();
         });
-    Widget body = (_doubanResponse == null) ? loading : content;
+    Widget body = (_movies.length == 0) ? loading : content;
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("DouBan"),
@@ -116,13 +127,21 @@ class DoubanState extends State<Douban> {
     );
   }
 
-  Widget _buildProgressIndicator() {
+  Widget _buildProgressIndicator(bool isend) {
+    Widget progress = new CircularProgressIndicator();
+    Widget end = new Text("加载完了~");
+    Widget body = null;
+    if(isend){
+      body = end;
+    }else{
+      body = progress;
+    }
     return new Padding(
       padding: const EdgeInsets.all(8.0),
       child: new Center(
         child: new Opacity(
           opacity: isPerformingRequest ? 1.0 : 0.0,
-          child: new CircularProgressIndicator(),
+          child: body,
         ),
       ),
     );
