@@ -39,40 +39,43 @@ class DoubanState extends State<Douban> {
 
   @override
   Widget build(BuildContext context) {
+    Widget loading = new CircularProgressIndicator();
+    Widget content = new RefreshIndicator(
+        child: new ListView.builder(
+          itemBuilder: (context, i) {
+            if (i.isOdd) {
+              return new Divider();
+            }
+            if (_doubanResponse == null) {
+              return new CircularProgressIndicator();
+            }
+            final movies = _doubanResponse.movies;
+            final index = i ~/ 2;
+            if (index < movies.length) {
+              return new Row(
+                children: <Widget>[
+                  new Image.network(
+                    movies[index].images.small,
+                    height: 80,
+                  ),
+                  new Text(movies[index].title)
+                ],
+              );
+            }
+          },
+          physics: const AlwaysScrollableScrollPhysics(),
+//                      itemCount: movies.length,
+        ),
+        onRefresh: () {
+          fetchDouban();
+        });
+    Widget body = _doubanResponse == null ? loading : content;
     return new Scaffold(
       appBar: new AppBar(
         title: new Text("DouBan"),
       ),
       body: new Center(
-        child: new RefreshIndicator(
-            child: new ListView.builder(
-              itemBuilder: (context, i) {
-                if (i.isOdd) {
-                  return new Divider();
-                }
-                if (_doubanResponse == null) {
-                  return new CircularProgressIndicator();
-                }
-                final movies = _doubanResponse.movies;
-                final index = i ~/ 2;
-                if (index < movies.length) {
-                  return new Row(
-                    children: <Widget>[
-                      new Image.network(
-                        movies[index].images.small,
-                        height: 80,
-                      ),
-                      new Text(movies[index].title)
-                    ],
-                  );
-                }
-              },
-              physics: const AlwaysScrollableScrollPhysics(),
-//                      itemCount: movies.length,
-            ),
-            onRefresh: () {
-              fetchDouban();
-            }),
+        child: body,
       ),
     );
   }
