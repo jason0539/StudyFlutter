@@ -2,27 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/douban/doubanresponse.dart';
 import 'package:http/http.dart' as http;
 
-class DoubanResponse {
-  final int count;
-  final int start;
-
-  DoubanResponse({this.count, this.start});
-
-  factory DoubanResponse.fromJson(Map<String, dynamic> json) {
-    return new DoubanResponse(
-      count: json['count'],
-      start: json['start'],
-    );
-  }
-}
 
 Future<DoubanResponse> fetchDouban() async {
   final response = await http
       .get("https://api.douban.com/v2/movie/in_theaters?start=0&count=10");
-  final responseJson = json.decode(response.body);
-  return DoubanResponse.fromJson(responseJson);
+  Map<String,dynamic> responseMap = json.decode(response.body);
+  return DoubanResponse.fromJson(responseMap);
 }
 
 class Douban extends StatelessWidget {
@@ -37,7 +25,7 @@ class Douban extends StatelessWidget {
             future: fetchDouban(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return new Text("${snapshot.data.count}");
+                return new Text("${snapshot.data.total}");
               } else if (snapshot.hasError) {
                 return new Text("${snapshot.error}");
               }
