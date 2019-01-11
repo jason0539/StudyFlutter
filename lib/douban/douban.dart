@@ -21,6 +21,9 @@ class DoubanState extends State<Douban> {
   bool isPerformingRequest = false;
 
   void fetchDouban() async {
+    setState(() {
+      _movies = [];
+    });
     print("第一页");
     _movies.clear();
     currPage = 0;
