@@ -20,48 +20,38 @@ class DoubanState extends State<Douban> {
   ScrollController _scrollController = new ScrollController();
   bool isPerformingRequest = false;
 
-  void fetchDouban() async {
-    setState(() {
-      _movies = [];
-    });
-    print("第一页");
-    _movies.clear();
-    currPage = 0;
-    int start = currPage * pageLimit;
-    final response = await http
-        .get("https://api.douban.com/v2/movie/in_theaters?start=${start}&count=${pageLimit}");
-    Map<String, dynamic> responseMap = json.decode(response.body);
-    print(responseMap);
-    if (responseMap.containsKey('code') && responseMap['code'] != 200) {
-      String msg = responseMap['msg'];
-      print(msg);
-    } else {
-      DoubanResponse doubanResponse = DoubanResponse.fromJson(responseMap);
-      total = doubanResponse.total;
+  void fetchDouban(bool isFirstPage) async {
+    if (isFirstPage) {
       setState(() {
-        _movies.addAll(doubanResponse.movies);
+        _movies = [];
       });
+      print("第一页");
+      _movies.clear();
+      currPage = 0;
+    } else {
+      currPage++;
+      print("下一页");
     }
-  }
-
-  void fetchNextPage() async {
-    currPage++;
-    print("下一页");
     if (!isPerformingRequest) {
       setState(() {
         isPerformingRequest = true;
       });
       int start = currPage * pageLimit;
-      final response = await http
-          .get("https://api.douban.com/v2/movie/in_theaters?start=${start}&count=${pageLimit}");
+      final response = await http.get(
+          "https://api.douban.com/v2/movie/in_theaters?start=${start}&count=${pageLimit}");
       Map<String, dynamic> responseMap = json.decode(response.body);
       print(responseMap);
-      setState(() {
+      if (responseMap.containsKey('code') && responseMap['code'] != 200) {
+        String msg = responseMap['msg'];
+        print(msg);
+      } else {
+        DoubanResponse doubanResponse = DoubanResponse.fromJson(responseMap);
+        total = doubanResponse.total;
         setState(() {
           _movies.addAll(DoubanResponse.fromJson(responseMap).movies);
+          isPerformingRequest = false;
         });
-        isPerformingRequest = false;
-      });
+      }
     }
   }
 
@@ -72,11 +62,11 @@ class DoubanState extends State<Douban> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        fetchNextPage();
+        fetchDouban(false);
       }
     });
 
-    fetchDouban();
+    fetchDouban(true);
   }
 
   @override
@@ -111,13 +101,11 @@ class DoubanState extends State<Douban> {
             }
           },
           physics: const AlwaysScrollableScrollPhysics(),
-          itemCount: (_movies.length == 0)
-              ? 0
-              : _movies.length * 2 + 1,
+          itemCount: (_movies.length == 0) ? 0 : _movies.length * 2 + 1,
           controller: _scrollController,
         ),
         onRefresh: () {
-          fetchDouban();
+          fetchDouban(true);
         });
     Widget body = (_movies.length == 0) ? loading : content;
     return new Scaffold(
@@ -134,9 +122,9 @@ class DoubanState extends State<Douban> {
     Widget progress = new CircularProgressIndicator();
     Widget end = new Text("加载完了~");
     Widget body = null;
-    if(isend){
+    if (isend) {
       body = end;
-    }else{
+    } else {
       body = progress;
     }
     return new Padding(
