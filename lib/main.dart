@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/random.dart';
+import 'package:flutter_app/battery.dart';
+import 'package:flutter_app/increment.dart';
+import 'package:flutter_app/random/random.dart';
 
 void main() => runApp(new MyApp());
 
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
 }
 
 class HomeScreen extends StatelessWidget {
-  final _demoEntrance = <String>["Random", "Douban"];
+  final _demoEntrance = <String>["Random", "Douban", "Increment", "Battery"];
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +49,14 @@ void clickLv(BuildContext context, String itemStr) {
           .push(new MaterialPageRoute(builder: (context) => new RandomWords()));
       break;
     case "Douban":
+      break;
+    case "Increment":
+      Navigator.of(context).push(new MaterialPageRoute(
+          builder: (context) => new InheritedWidgetTestContainer()));
+      break;
+    case "Battery":
+      Navigator.of(context).push(
+          new MaterialPageRoute(builder: (context) => new BatteryWidget()));
       break;
   }
 }

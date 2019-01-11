@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/battery.dart';
-import 'package:flutter_app/increment.dart';
 
 class Detail extends StatelessWidget {
   final imgUrl =
@@ -45,14 +43,8 @@ class Detail extends StatelessWidget {
       return Builder(
           builder: (context) => new InkWell(
               onTap: () {
-                if (label == "CALL") {
-                  Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new InheritedWidgetTestContainer()));
-                } else if (label == "ROUTE") {
-                  Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new BatteryWidget()));
-                } else {
-                  Scaffold.of(context)
+                Scaffold.of(context)
                       .showSnackBar(new SnackBar(content: new Text(label)));
-                }
               },
               child: new Column(
                 mainAxisSize: MainAxisSize.min,

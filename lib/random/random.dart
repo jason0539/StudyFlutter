@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
-import 'package:flutter_app/liked.dart';
+import 'package:flutter_app/random/liked.dart';
 
 class RandomWords extends StatefulWidget {
   @override
