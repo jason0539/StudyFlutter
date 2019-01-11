@@ -46,9 +46,23 @@ class DoubanState extends State<Douban> {
         print(msg);
       } else {
         DoubanResponse doubanResponse = DoubanResponse.fromJson(responseMap);
+        List<DMovie> movies = doubanResponse.movies;
         total = doubanResponse.total;
+
+        if (movies.length == 0) {
+          double edge = 50.0;
+          double offsetFromBottom = _scrollController.position.maxScrollExtent -
+              _scrollController.position.pixels;
+          if (offsetFromBottom < edge) {
+            _scrollController.animateTo(
+                _scrollController.offset - (edge - offsetFromBottom),
+                duration: new Duration(milliseconds: 500),
+                curve: Curves.easeOut);
+          }
+        }
+
         setState(() {
-          _movies.addAll(DoubanResponse.fromJson(responseMap).movies);
+          _movies.addAll(doubanResponse.movies);
           isPerformingRequest = false;
         });
       }
