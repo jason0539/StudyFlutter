@@ -122,10 +122,10 @@ class DoubanState extends State<Douban> {
                         width: 160,
                         fit: BoxFit.cover,
                       ),
-                      new Container(
-                        width: 250,
-                        padding: EdgeInsets.only(left: 10,right: 3),
-                        child: new Column(
+                      new Expanded(
+                        child: new Container(
+                          padding: EdgeInsets.only(left: 10),
+                          child: new Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             new Text(
@@ -144,7 +144,7 @@ class DoubanState extends State<Douban> {
                               ),
                             )
                           ],
-                        ),
+                        ),),
                       )
                     ],
                   ),
