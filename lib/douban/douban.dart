@@ -97,7 +97,10 @@ class DoubanState extends State<Douban> {
         child: new ListView.builder(
           itemBuilder: (context, i) {
             if (i.isOdd) {
-              return new Divider();
+              return new Divider(
+                color: Colors.grey,
+                height: 1,
+              );
             }
             final index = i ~/ 2;
             if (index == _movies.length) {
@@ -105,14 +108,32 @@ class DoubanState extends State<Douban> {
               return _buildProgressIndicator(end);
             } else {
               return GestureDetector(
-                child: new Row(
-                  children: <Widget>[
-                    new Image.network(
-                      _movies[index].images.small,
-                      height: 80,
-                    ),
-                    new Text(_movies[index].title)
-                  ],
+                child: new Container(
+                  padding: const EdgeInsets.all(10.0),
+                  color: Colors.white,
+                  child: new Row(
+                    children: <Widget>[
+                      new Image.network(
+                        _movies[index].images.small,
+                        height: 200,
+                        width: 160,
+                        fit: BoxFit.cover,
+                      ),
+                      new Column(
+                        children: <Widget>[
+                          new Text(
+                            _movies[index].title,
+                            textAlign: TextAlign.left,
+                            style: new TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20),
+                          ),
+                          new Text(_movies[index].year)
+                        ],
+                      )
+                    ],
+                  ),
                 ),
                 onTap: () => Navigator.of(context).push(new MaterialPageRoute(
                     builder: (context) =>
