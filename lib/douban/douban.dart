@@ -98,6 +98,7 @@ class DoubanState extends State<Douban> {
           itemBuilder: (context, i) {
             if (i.isOdd) {
               return new Divider(
+                indent: 10,
                 color: Colors.grey,
                 height: 1,
               );
@@ -112,6 +113,8 @@ class DoubanState extends State<Douban> {
                   padding: const EdgeInsets.all(10.0),
                   color: Colors.white,
                   child: new Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       new Image.network(
                         _movies[index].images.small,
@@ -119,18 +122,29 @@ class DoubanState extends State<Douban> {
                         width: 160,
                         fit: BoxFit.cover,
                       ),
-                      new Column(
-                        children: <Widget>[
-                          new Text(
-                            _movies[index].title,
-                            textAlign: TextAlign.left,
-                            style: new TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
-                          ),
-                          new Text(_movies[index].year)
-                        ],
+                      new Container(
+                        width: 250,
+                        padding: EdgeInsets.only(left: 10,right: 3),
+                        child: new Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            new Text(
+                              _movies[index].title,
+                              textAlign: TextAlign.left,
+                              style: new TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30),
+                            ),
+                            new Container(
+                              padding: EdgeInsets.only(top: 10),
+                              child: new Text(
+                                _movies[index].year,
+                                style: new TextStyle(fontSize: 20),
+                              ),
+                            )
+                          ],
+                        ),
                       )
                     ],
                   ),
