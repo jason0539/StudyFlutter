@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/douban/doubanresponse.dart';
+import 'package:flutter_app/douban/movie.dart';
 import 'package:http/http.dart' as http;
 
 class Douban extends StatefulWidget {
@@ -103,14 +104,19 @@ class DoubanState extends State<Douban> {
               bool end = total == _movies.length;
               return _buildProgressIndicator(end);
             } else {
-              return new Row(
-                children: <Widget>[
-                  new Image.network(
-                    _movies[index].images.small,
-                    height: 80,
-                  ),
-                  new Text(_movies[index].title)
-                ],
+              return GestureDetector(
+                child: new Row(
+                  children: <Widget>[
+                    new Image.network(
+                      _movies[index].images.small,
+                      height: 80,
+                    ),
+                    new Text(_movies[index].title)
+                  ],
+                ),
+                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (context) =>
+                        new Movie(int.tryParse(_movies[index].id)))),
               );
             }
           },
